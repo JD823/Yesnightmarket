@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YES！夜市小程序 - 原型预览</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #9333ea, #c026d3);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .phone-frame {
+            width: 390px;
+            height: 844px;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 10px solid #111827;
+        }
+        iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+        h1 {
+            background: linear-gradient(to right, #c026d3, #9333ea);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* 隐藏所有滚动条但保留滚动功能 */
+        body::-webkit-scrollbar {
+            width: 0;
+            display: none;
+        }
+        
+        html, body {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        
+        iframe::-webkit-scrollbar {
+            width: 0;
+            display: none;
+        }
+        
+        /* 对iframe内部文档的滚动条也进行隐藏处理 */
+        iframe {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
+            gap: 3rem;
+            justify-items: center;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .phone-frame {
+                width: 340px;
+                height: 736px;
+            }
+            
+            h1 {
+                font-size: 2rem !important;
+            }
+            
+            .city-chips {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+        
+        .device-label {
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .phone-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .phone-container:hover {
+            transform: translateY(-10px);
+        }
+        
+        /* 城市选择器样式 */
+        .city-selector {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .city-selector select {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 0.5rem 1rem;
+            width: 100%;
+            font-size: 1rem;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: calc(100% - 1rem) center;
+            padding-right: 2.5rem;
+        }
+        
+        .city-selector select option {
+            background-color: #9333ea;
+            color: white;
+        }
+        
+        .city-selector button {
+            background: linear-gradient(to right, #c026d3, #9333ea);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .city-selector button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .city-chip {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 0.3rem 1rem;
+            margin: 0.3rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .city-chip:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .city-chip.active {
+            background: white;
+            color: #9333ea;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 夜间模式样式 */
+        body.night-mode {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+        }
+        
+        body.night-mode h1 {
+            background: linear-gradient(to right, #059669, #10b981);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        
+        body.night-mode .city-selector {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        
+        body.night-mode .city-selector select {
+            background-color: rgba(15, 23, 42, 0.7);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        }
+        
+        body.night-mode .city-selector select option {
+            background-color: #1e293b;
+        }
+        
+        body.night-mode .city-selector button {
+            background: linear-gradient(to right, #059669, #10b981);
+        }
+        
+        body.night-mode .city-chip {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        body.night-mode .city-chip:hover {
+            background: rgba(15, 23, 42, 0.7);
+        }
+        
+        body.night-mode .city-chip.active {
+            background: #064e3b;
+            color: white;
+        }
+        
+        /* 夜间模式导航按钮样式 */
+        body.night-mode .nav-btn {
+            background-color: rgba(15, 23, 42, 0.5);
+            color: white;
+        }
+        
+        body.night-mode .nav-btn:hover,
+        body.night-mode .nav-btn.active {
+            background-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        /* 导航按钮活跃状态 */
+        .nav-btn.active {
+            font-weight: 600;
+        }
+        
+        /* 夜间模式切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        body.night-mode .theme-toggle {
+            background: rgba(15, 23, 42, 0.7);
+        }
+        
+        .sun-icon, .moon-icon {
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        body:not(.night-mode) .moon-icon {
+            display: block;
+        }
+        
+        body:not(.night-mode) .sun-icon {
+            display: none;
+        }
+        
+        body.night-mode .moon-icon {
+            display: none;
+        }
+        
+        body.night-mode .sun-icon {
+            display: block;
+            color: #10b981;
+        }
+        
+        /* 添加CSS变量 */
+        :root {
+            --primary-color: #a855f7;
+            --secondary-color: #c026d3;
+        }
+        
+        body.night-mode {
+            --primary-color: #10b981;
+            --secondary-color: #059669;
+        }
+        
+        /* 底部导航栏样式 */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 83px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 30px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .night-mode .bottom-nav {
+            background: #1e293b;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+            width: 25%;
+            cursor: pointer;
+        }
+        
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+            color: #64748b;
+        }
+        
+        .night-mode .nav-icon {
+            color: #94a3b8;
+        }
+        
+        .nav-label {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .night-mode .nav-label {
+            color: #94a3b8;
+        }
+        
+        .nav-item.active .nav-icon {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .night-mode .nav-item.active .nav-icon {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        
+        .nav-item.active .nav-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .night-mode .nav-item.active .nav-label {
+            color: var(--primary-color);
+        }
+        
+        .tab-bar-highlight {
+            position: absolute;
+            bottom: 60px;
+            height: 3px;
+            width: 20px;
+            border-radius: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            transition: transform 0.3s ease;
+        }
+        
+        .night-mode .tab-bar-highlight {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        }
+    </style>
+</head>
+<body class="min-h-screen p-8">
+    <!-- 夜间模式切换按钮 -->
+    <div class="theme-toggle" onclick="toggleNightMode()">
+        <i class="fas fa-moon moon-icon"></i>
+        <i class="fas fa-sun sun-icon"></i>
+    </div>
+
+    <header class="max-w-7xl mx-auto mb-10 text-center">
+        <h1 class="text-6xl font-bold mb-3">YES！夜市小程序</h1>
+        <p class="text-white text-xl opacity-90 mb-8">基于iPhone 16 Pro Max尺寸的紫色现代UI原型设计</p>
+        
+        <!-- 项目说明 -->
+        <div class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-md rounded-xl p-6 mb-8 max-w-3xl mx-auto">
+            <h3 class="text-xl font-semibold mb-3">项目功能介绍</h3>
+            <ul class="text-left text-white space-y-2">
+                <li><i class="fas fa-map-marked-alt mr-2"></i> <strong>地图页</strong>：展示各城市夜市位置分布，支持筛选和搜索</li>
+                <li><i class="fas fa-users mr-2"></i> <strong>社区页</strong>：用户社区互动，夜市体验分享和活动参与</li>
+                <li><i class="fas fa-star mr-2"></i> <strong>推荐页</strong>：系统智能推荐夜市美食和打卡地点</li>
+                <li><i class="fas fa-user mr-2"></i> <strong>个人页</strong>：用户信息管理和夜市足迹收藏</li>
+                <li><i class="fas fa-info-circle mr-2"></i> <strong>首次使用引导</strong>：新用户功能介绍和操作指引</li>
+            </ul>
+            <p class="text-white text-sm mt-4">本原型设计包含各功能页面的界面展示，支持日间/夜间模式切换，可通过顶部导航切换不同模块。</p>
+        </div>
+        
+        <!-- 页面导航 -->
+        <div class="flex justify-center gap-4 mb-6">
+            <button class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-full transition-all duration-300 flex items-center nav-btn" data-page="map" onclick="navigateTo('map')">
+                <i class="fas fa-map-marked-alt mr-2"></i>
+                <span>地图</span>
+            </button>
+            <button class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-full transition-all duration-300 flex items-center nav-btn" data-page="community" onclick="navigateTo('community')">
+                <i class="fas fa-users mr-2"></i>
+                <span>社区</span>
+            </button>
+            <button class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-full transition-all duration-300 flex items-center nav-btn" data-page="recommendation" onclick="navigateTo('recommendation')">
+                <i class="fas fa-star mr-2"></i>
+                <span>推荐</span>
+            </button>
+            <button class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-full transition-all duration-300 flex items-center nav-btn" data-page="profile" onclick="navigateTo('profile')">
+                <i class="fas fa-user mr-2"></i>
+                <span>我的</span>
+            </button>
+        </div>
+        
+        <!-- 城市选择器 -->
+        <div class="city-selector mx-auto">
+            <h2 class="text-xl font-semibold mb-4">选择您想探索的城市</h2>
+            
+            <div class="city-chips flex flex-wrap justify-center mb-4">
+                <div class="city-chip active" onclick="selectCity(this, '北京')">北京</div>
+                <div class="city-chip" onclick="selectCity(this, '上海')">上海</div>
+                <div class="city-chip" onclick="selectCity(this, '广州')">广州</div>
+                <div class="city-chip" onclick="selectCity(this, '深圳')">深圳</div>
+                <div class="city-chip" onclick="selectCity(this, '天津')">天津</div>
+                <div class="city-chip" onclick="selectCity(this, '重庆')">重庆</div>
+            </div>
+            
+            <div class="flex items-center">
+                <select id="citySelect" class="flex-grow mr-3">
+                    <option value="北京">北京</option>
+                    <option value="上海">上海</option>
+                    <option value="广州">广州</option>
+                    <option value="深圳">深圳</option>
+                    <option value="天津">天津</option>
+                    <option value="重庆">重庆</option>
+                </select>
+                <button onclick="exploreCity()">探索夜市</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto">
+        <div class="grid-container">
+            <div class="phone-container">
+                <div class="device-label">夜市地图</div>
+                <div class="phone-frame">
+                    <iframe id="mapFrame" src="map.html" title="夜市地图"></iframe>
+                    <div class="bottom-nav" id="mapNav">
+                        <div class="nav-item active" data-tab="home">
+                            <i class="fas fa-home nav-icon"></i>
+                            <span class="nav-label">首页</span>
+                        </div>
+                        <div class="nav-item" data-tab="community">
+                            <i class="fas fa-users nav-icon"></i>
+                            <span class="nav-label">社区</span>
+                        </div>
+                        <div class="nav-item" data-tab="recommend">
+                            <i class="fas fa-star nav-icon"></i>
+                            <span class="nav-label">推荐</span>
+                        </div>
+                        <div class="nav-item" data-tab="profile">
+                            <i class="fas fa-user nav-icon"></i>
+                            <span class="nav-label">我的</span>
+                        </div>
+                        <div class="tab-bar-highlight" style="transform: translateX(calc(25% * 0 - 10px))"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="phone-container">
+                <div class="device-label">社区活动</div>
+                <div class="phone-frame">
+                    <iframe id="communityFrame" src="community.html" title="社区活动"></iframe>
+                    <div class="bottom-nav" id="communityNav">
+                        <div class="nav-item" data-tab="home">
+                            <i class="fas fa-home nav-icon"></i>
+                            <span class="nav-label">首页</span>
+                        </div>
+                        <div class="nav-item active" data-tab="community">
+                            <i class="fas fa-users nav-icon"></i>
+                            <span class="nav-label">社区</span>
+                        </div>
+                        <div class="nav-item" data-tab="recommend">
+                            <i class="fas fa-star nav-icon"></i>
+                            <span class="nav-label">推荐</span>
+                        </div>
+                        <div class="nav-item" data-tab="profile">
+                            <i class="fas fa-user nav-icon"></i>
+                            <span class="nav-label">我的</span>
+                        </div>
+                        <div class="tab-bar-highlight" style="transform: translateX(calc(25% * 1 - 10px))"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="phone-container">
+                <div class="device-label">我的</div>
+                <div class="phone-frame">
+                    <iframe id="profileFrame" src="profile.html" title="我的"></iframe>
+                    <div class="bottom-nav" id="profileNav">
+                        <div class="nav-item" data-tab="home">
+                            <i class="fas fa-home nav-icon"></i>
+                            <span class="nav-label">首页</span>
+                        </div>
+                        <div class="nav-item" data-tab="community">
+                            <i class="fas fa-users nav-icon"></i>
+                            <span class="nav-label">社区</span>
+                        </div>
+                        <div class="nav-item" data-tab="recommend">
+                            <i class="fas fa-star nav-icon"></i>
+                            <span class="nav-label">推荐</span>
+                        </div>
+                        <div class="nav-item active" data-tab="profile">
+                            <i class="fas fa-user nav-icon"></i>
+                            <span class="nav-label">我的</span>
+                        </div>
+                        <div class="tab-bar-highlight" style="transform: translateX(calc(25% * 3 - 10px))"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="phone-container">
+                <div class="device-label">夜市推荐弹窗</div>
+                <div class="phone-frame">
+                    <iframe id="recommendationFrame" src="recommendation.html" title="夜市推荐弹窗"></iframe>
+                    <div class="bottom-nav" id="recommendNav">
+                        <div class="nav-item" data-tab="home">
+                            <i class="fas fa-home nav-icon"></i>
+                            <span class="nav-label">首页</span>
+                        </div>
+                        <div class="nav-item" data-tab="community">
+                            <i class="fas fa-users nav-icon"></i>
+                            <span class="nav-label">社区</span>
+                        </div>
+                        <div class="nav-item active" data-tab="recommend">
+                            <i class="fas fa-star nav-icon"></i>
+                            <span class="nav-label">推荐</span>
+                        </div>
+                        <div class="nav-item" data-tab="profile">
+                            <i class="fas fa-user nav-icon"></i>
+                            <span class="nav-label">我的</span>
+                        </div>
+                        <div class="tab-bar-highlight" style="transform: translateX(calc(25% * 2 - 10px))"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="phone-container">
+                <div class="device-label">首次使用引导</div>
+                <div class="phone-frame">
+                    <iframe id="onboardingFrame" src="onboarding.html" title="首次使用引导"></iframe>
+                    <div class="bottom-nav" id="onboardingNav">
+                        <div class="nav-item active" data-tab="home">
+                            <i class="fas fa-home nav-icon"></i>
+                            <span class="nav-label">首页</span>
+                        </div>
+                        <div class="nav-item" data-tab="community">
+                            <i class="fas fa-users nav-icon"></i>
+                            <span class="nav-label">社区</span>
+                        </div>
+                        <div class="nav-item" data-tab="recommend">
+                            <i class="fas fa-star nav-icon"></i>
+                            <span class="nav-label">推荐</span>
+                        </div>
+                        <div class="nav-item" data-tab="profile">
+                            <i class="fas fa-user nav-icon"></i>
+                            <span class="nav-label">我的</span>
+                        </div>
+                        <div class="tab-bar-highlight" style="transform: translateX(calc(25% * 0 - 10px))"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // 全局夜间模式控制
+        function toggleNightMode() {
+            document.body.classList.toggle('night-mode');
+            
+            // 获取当前模式
+            const isNightMode = document.body.classList.contains('night-mode');
+            
+            // 保存设置到localStorage
+            localStorage.setItem('nightMode', isNightMode);
+            
+            // 同步更新所有iframe页面的夜间模式状态
+            updateIframesNightMode(isNightMode);
+        }
+        
+        // 更新所有iframe的夜间模式
+        function updateIframesNightMode(isNightMode) {
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                if (iframe.contentWindow) {
+                    try {
+                        if (isNightMode) {
+                            iframe.contentWindow.document.body.classList.add('night-mode');
+                            iframe.contentWindow.document.body.classList.add('dark-mode'); // 兼容现有dark-mode
+                        } else {
+                            iframe.contentWindow.document.body.classList.remove('night-mode');
+                            iframe.contentWindow.document.body.classList.remove('dark-mode'); // 兼容现有dark-mode
+                        }
+                        
+                        // 如果iframe中有localStorage，也更新它
+                        if (iframe.contentWindow.localStorage) {
+                            iframe.contentWindow.localStorage.setItem('nightMode', isNightMode);
+                        }
+                        
+                        // 如果是onboarding页面，更新其主题切换按钮状态
+                        if (iframe.id === 'onboardingFrame' && iframe.contentWindow.toggleTheme) {
+                            // 更新onboarding页面中的主题图标
+                            const themeIcon = iframe.contentWindow.document.querySelector('.theme-toggle-btn i');
+                            if (themeIcon) {
+                                if (isNightMode) {
+                                    themeIcon.classList.remove('fa-moon');
+                                    themeIcon.classList.add('fa-sun');
+                                } else {
+                                    themeIcon.classList.remove('fa-sun');
+                                    themeIcon.classList.add('fa-moon');
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.log('无法访问iframe内容:', e);
+                    }
+                }
+            });
+        }
+        
+        // 监听来自iframe的主题切换事件
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'themeToggle') {
+                const isNightMode = event.data.isNightMode;
+                
+                // 更新主页面主题
+                if (isNightMode) {
+                    document.body.classList.add('night-mode');
+                } else {
+                    document.body.classList.remove('night-mode');
+                }
+                
+                // 保存设置并同步到其他iframe
+                localStorage.setItem('nightMode', isNightMode);
+                updateIframesNightMode(isNightMode);
+            }
+        });
+        
+        // 页面加载时检查夜间模式设置
+        function initThemeMode() {
+            const storedNightMode = localStorage.getItem('nightMode');
+            if (storedNightMode === 'true') {
+                document.body.classList.add('night-mode');
+                
+                // 等待iframe加载完成后同步主题
+                setTimeout(() => {
+                    updateIframesNightMode(true);
+                }, 1000);
+            }
+        }
+        
+        // 导航功能 - 在设备上显示不同页面
+        function navigateTo(page) {
+            // 移除所有导航按钮的活动状态
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'bg-opacity-30', 'font-semibold', 'active');
+                btn.classList.add('bg-opacity-20');
+            });
+            
+            // 添加当前按钮的活动状态
+            const activeBtn = document.querySelector(`.nav-btn[data-page="${page}"]`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-opacity-20');
+                activeBtn.classList.add('bg-white', 'bg-opacity-30', 'font-semibold', 'active');
+            }
+            
+            // 获取当前选择的城市
+            const city = document.getElementById('citySelect').value;
+            
+            // 更新所有iframe的显示状态
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                const container = iframe.closest('.phone-container');
+                if (container) {
+                    // 检查iframe的标题以确定其页面类型
+                    const iframeTitle = iframe.title.toLowerCase();
+                    
+                    // 特殊处理首次使用引导页面
+                    if (page === 'map' && iframeTitle.includes('引导')) {
+                        // 保持引导页面显示
+                        container.style.display = '';
+                        return;
+                    }
+                    
+                    if (iframeTitle.includes(page)) {
+                        container.style.display = '';
+                        
+                        // 更新URL中的城市参数
+                        if (iframe.id) {
+                            const currentSrc = iframe.src;
+                            const baseUrl = currentSrc.split('?')[0];
+                            iframe.src = `${baseUrl}?city=${city}`;
+                        }
+                    } else if (!iframeTitle.includes('引导')) {
+                        container.style.display = 'none';
+                    }
+                }
+            });
+        }
+        
+        // 城市选择功能
+        function selectCity(element, city) {
+            // 更新UI
+            document.querySelectorAll('.city-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // 更新下拉选择框
+            document.getElementById('citySelect').value = city;
+        }
+        
+        function exploreCity() {
+            const city = document.getElementById('citySelect').value;
+            
+            // 更新所有iframe的URL，添加city参数
+            updateFrameUrls(city);
+            
+            // 默认导航到地图页面
+            navigateTo('map');
+        }
+        
+        function updateFrameUrls(city) {
+            const mapFrame = document.getElementById('mapFrame');
+            const communityFrame = document.getElementById('communityFrame');
+            const recommendationFrame = document.getElementById('recommendationFrame');
+            const profileFrame = document.getElementById('profileFrame');
+            
+            // 为每个iframe更新URL
+            updateIframeUrl(mapFrame, 'map.html', city);
+            updateIframeUrl(communityFrame, 'community.html', city);
+            updateIframeUrl(recommendationFrame, 'recommendation.html', city);
+            updateIframeUrl(profileFrame, 'profile.html', city);
+        }
+        
+        function updateIframeUrl(iframe, baseUrl, city) {
+            if (!iframe) return;
+            
+            const url = new URL(baseUrl, window.location.href);
+            url.searchParams.set('city', city);
+            iframe.src = url.toString();
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化主题
+            initThemeMode();
+            
+            // 重置首次使用引导页面到第一步
+            const onboardingFrame = document.getElementById('onboardingFrame');
+            if (onboardingFrame) {
+                onboardingFrame.onload = function() {
+                    try {
+                        // 直接调用iframe中的showSlide函数显示第一步
+                        onboardingFrame.contentWindow.showSlide(1);
+                        onboardingFrame.contentWindow.updatePagination();
+                        onboardingFrame.contentWindow.currentSlide = 1;
+                    } catch (e) {
+                        console.log('无法访问onboarding iframe：', e);
+                    }
+                };
+                
+                // 如果iframe已经加载完成，直接执行
+                if (onboardingFrame.contentDocument && onboardingFrame.contentDocument.readyState === 'complete') {
+                    try {
+                        onboardingFrame.contentWindow.showSlide(1);
+                        onboardingFrame.contentWindow.updatePagination();
+                        onboardingFrame.contentWindow.currentSlide = 1;
+                    } catch (e) {
+                        console.log('无法访问onboarding iframe：', e);
+                    }
+                }
+            }
+            
+            // 监听iframe加载事件，同步主题设置
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.addEventListener('load', function() {
+                    const isNightMode = document.body.classList.contains('night-mode');
+                    try {
+                        if (isNightMode) {
+                            iframe.contentWindow.document.body.classList.add('night-mode');
+                            iframe.contentWindow.document.body.classList.add('dark-mode'); // 兼容现有dark-mode
+                        }
+                    } catch (e) {
+                        console.log('无法访问iframe内容:', e);
+                    }
+                });
+            });
+            
+            // 显示所有原型页面但开始不隐藏任何页面
+            const containers = document.querySelectorAll('.phone-container');
+            containers.forEach(container => {
+                container.style.display = '';
+            });
+            
+            // 添加底部导航栏交互
+            setupBottomNavigation();
+        });
+        
+        // 设置底部导航栏交互
+        function setupBottomNavigation() {
+            // 获取所有导航项
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            // 为每个导航项添加点击事件
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const tab = this.getAttribute('data-tab');
+                    const navContainer = this.closest('.bottom-nav');
+                    const phoneFrame = navContainer.closest('.phone-frame');
+                    const iframe = phoneFrame.querySelector('iframe');
+                    
+                    // 更新导航项状态
+                    const siblingItems = navContainer.querySelectorAll('.nav-item');
+                    siblingItems.forEach(sibling => {
+                        sibling.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // 更新高亮条位置
+                    const highlight = navContainer.querySelector('.tab-bar-highlight');
+                    const index = Array.from(siblingItems).indexOf(this);
+                    highlight.style.transform = `translateX(calc(25% * ${index} - 10px))`;
+                    
+                    // 根据选项切换页面
+                    let targetPage = '';
+                    switch(tab) {
+                        case 'home':
+                            targetPage = 'map.html';
+                            break;
+                        case 'community':
+                            targetPage = 'community.html';
+                            break;
+                        case 'recommend':
+                            targetPage = 'recommendation.html';
+                            break;
+                        case 'profile':
+                            targetPage = 'profile.html';
+                            break;
+                    }
+                    
+                    if(targetPage) {
+                        // 获取当前城市
+                        const city = document.getElementById('citySelect').value;
+                        iframe.src = `${targetPage}?city=${city}`;
+                        
+                        // 更新相应的原型展示区
+                        const deviceLabel = iframe.closest('.phone-container').querySelector('.device-label');
+                        if(tab === 'home') {
+                            deviceLabel.textContent = '夜市地图';
+                        } else if(tab === 'community') {
+                            deviceLabel.textContent = '社区活动';
+                        } else if(tab === 'recommend') {
+                            deviceLabel.textContent = '夜市推荐';
+                        } else if(tab === 'profile') {
+                            deviceLabel.textContent = '我的';
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
