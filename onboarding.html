@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YES！- 首次使用引导</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #a855f7;
+            --secondary-color: #c026d3;
+            --accent-color: #9333ea;
+            --dark-bg: #0f172a;
+            --light-bg: #f5f7ff;
+        }
+        
+        /* 夜间模式色彩变量 */
+        body.night-mode {
+            --primary-color: #10b981;
+            --secondary-color: #059669;
+            --accent-color: #047857;
+            --dark-bg: #111827;
+            --light-bg: #1e293b;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--light-bg);
+            color: #1e293b;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        body.dark-mode, body.night-mode {
+            background-color: var(--dark-bg);
+            color: #f1f5f9;
+        }
+        .status-bar {
+            height: 44px;
+            padding-top: 12px;
+            font-size: 14px;
+        }
+        
+        .swiper-container {
+            position: relative;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .swiper-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            padding: 0 24px;
+            padding-top: 30px;
+        }
+        .swiper-slide.active {
+            opacity: 1;
+        }
+        .swiper-pagination {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .swiper-pagination-bullet {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            transition: all 0.3s ease;
+        }
+        .dark-mode .swiper-pagination-bullet {
+            background-color: #475569;
+        }
+        .swiper-pagination-bullet.active {
+            width: 24px;
+            border-radius: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        }
+        .onboarding-image {
+            width: 280px;
+            height: 280px;
+            margin-bottom: 40px;
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
+        }
+        .slide-heading {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .slide-description {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #64748b;
+            max-width: 320px;
+            margin-bottom: 24px;
+        }
+        .dark-mode .slide-description {
+            color: #94a3b8;
+        }
+        .btn-control {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            padding: 0 24px;
+        }
+        .btn-next {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 12px;
+            padding: 14px 36px;
+            font-weight: 600;
+            width: 100%;
+            max-width: 320px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(168, 85, 247, 0.2);
+        }
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(168, 85, 247, 0.3);
+        }
+        .btn-skip {
+            color: #64748b;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            background-color: rgba(203, 213, 225, 0.2);
+            transition: all 0.3s ease;
+        }
+        .dark-mode .btn-skip {
+            color: #94a3b8;
+            background-color: rgba(71, 85, 105, 0.2);
+        }
+        
+        /* 动画效果 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* 隐藏滚动条但保留滚动功能 */
+        body::-webkit-scrollbar {
+            width: 0;
+            display: none;
+        }
+        
+        html, body {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+            overflow-y: auto;
+        }
+        
+        /* 夜间模式样式覆盖 */
+        .night-mode .swiper-pagination-bullet {
+            background-color: #475569;
+        }
+        
+        .night-mode .swiper-pagination-bullet.active {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        }
+        
+        .night-mode .slide-heading {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        
+        .night-mode .slide-description {
+            color: #94a3b8;
+        }
+        
+        .night-mode .btn-next {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
+        
+        .night-mode .btn-next:hover {
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        .night-mode .btn-skip {
+            color: #94a3b8;
+            background-color: rgba(71, 85, 105, 0.2);
+        }
+        
+        /* YES! LOGO样式 */
+        .yes-logo {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            text-align: center;
+        }
+        
+        .logo-text {
+            font-size: 34px;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            height: 60px;
+            width: 60px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin: 0 auto 10px;
+        }
+        
+        /* 主题切换按钮增强 */
+        .theme-toggle-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            border-radius: 50%;
+            background-color: rgba(203, 213, 225, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .theme-toggle-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .night-mode .theme-toggle-btn {
+            background-color: rgba(71, 85, 105, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .night-mode .theme-toggle-btn i {
+            color: var(--primary-color);
+        }
+        
+        /* 选项选中状态增强 */
+        .city-option.selected, .time-option.selected {
+            background-color: rgba(168, 85, 247, 0.2) !important;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.25);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        
+        .night-mode .city-option.selected, .night-mode .time-option.selected {
+            background-color: rgba(16, 185, 129, 0.2) !important;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        /* 选项动画效果 */
+        .city-option, .time-option {
+            border: 1px solid transparent;
+            transition: all 0.3s ease, transform 0.2s ease;
+        }
+        
+        .city-option:active, .time-option:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="">
+    <!-- 状态栏 -->
+    <div class="status-bar flex justify-between items-center px-5 fixed top-0 left-0 right-0 bg-white dark:bg-gray-900 z-50">
+        <div>9:41</div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <!-- 主题切换按钮 -->
+    <div class="theme-toggle-btn" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- YES! LOGO -->
+    <div class="yes-logo">
+        <div class="logo-icon">
+            <i class="fas fa-moon"></i>
+        </div>
+        <h1 class="logo-text">YES!</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">探索夜间城市之美</p>
+    </div>
+
+    <!-- 轮播内容区 -->
+    <div class="swiper-container">
+        <!-- 步骤1: 选择城市 -->
+        <div class="swiper-slide active" id="slide1">
+            <div class="w-full max-w-sm mx-auto">
+                <h2 class="slide-heading text-center mb-8">你所在的城市是？</h2>
+                
+                <div class="grid grid-cols-2 gap-4 mb-10">
+                    <div class="city-option p-4 rounded-xl bg-white bg-opacity-10 backdrop-filter backdrop-blur-md cursor-pointer transition-all duration-300 hover:transform hover:scale-105 active:scale-95" onclick="selectOnboardingCity(this, '北京')">
+                        <div class="text-center">
+                            <i class="fas fa-building text-3xl mb-2" style="color: var(--primary-color)"></i>
+                            <div class="font-medium">北京</div>
+                        </div>
+                    </div>
+                    <div class="city-option p-4 rounded-xl bg-white bg-opacity-10 backdrop-filter backdrop-blur-md cursor-pointer transition-all duration-300 hover:transform hover:scale-105 active:scale-95" onclick="selectOnboardingCity(this, '上海')">
+                        <div class="text-center">
+                            <i class="fas fa-city text-3xl mb-2" style="color: var(--primary-color)"></i>
+                            <div class="font-medium">上海</div>
+                        </div>
+                    </div>
+                    <div class="city-option p-4 rounded-xl bg-white bg-opacity-10 backdrop-filter backdrop-blur-md cursor-pointer transition-all duration-300 hover:transform hover:scale-105 active:scale-95" onclick="selectOnboardingCity(this, '广州')">
+                        <div class="text-center">
+                            <i class="fas fa-landmark text-3xl mb-2" style="color: var(--primary-color)"></i>
+                            <div class="font-medium">广州</div>
+                        </div>
+                    </div>
+                    <div class="city-option p-4 rounded-xl bg-white bg-opacity-10 backdrop-filter backdrop-blur-md cursor-pointer transition-all duration-300 hover:transform hover:scale-105 active:scale-95" onclick="selectOnboardingCity(this, '深圳')">
+                        <div class="text-center">
+                            <i class="fas fa-gopuram text-3xl mb-2" style="color: var(--primary-color)"></i>
+                            <div class="font-medium">深圳</div>
+                        </div>
+                    </div>
+                    <div class="city-option p-4 rounded-xl bg-white bg-opacity-10 backdrop-filter backdrop-blur-md cursor-pointer transition-all duration-300 hover:transform hover:scale-105 active:scale-95" onclick="selectOnboardingCity(this, '天津')">
+                        <div class="text-center">
+                            <i class="fas fa-archway text-3xl mb-2" style="color: var(--primary-color)"></i>
+                            <div class="font-medium">天津</div>
+                        </div>
+                    </div>
+                    <div class="city-option p-4 rounded-xl bg-white bg-opacity-10 backdrop-filter backdrop-blur-md cursor-pointer transition-all duration-300 hover:transform hover:scale-105 active:scale-95" onclick="selectOnboardingCity(this, '重庆')">
+                        <div class="text-center">
+                            <i class="fas fa-mountain text-3xl mb-2" style="color: var(--primary-color)"></i>
+                            <div class="font-medium">重庆</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 步骤2: 选择时间 -->
+        <div class="swiper-slide" id="slide2">
+            <div class="w-full max-w-sm mx-auto">
+                <h2 class="slide-heading text-center mb-8">你常逛夜市的时间？</h2>
+                
+                <div class="space-y-4 mb-10">
+                    <div class="time-option p-3 rounded-xl bg-white bg-opacity-10 backdrop-filter backdrop-blur-md cursor-pointer transition-all duration-300 flex items-center" onclick="selectOnboardingTime(this, '19:00')">
+                        <i class="fas fa-clock text-2xl mr-4" style="color: var(--primary-color)"></i>
+                        <div class="font-medium">19:00</div>
+                    </div>
+                    <div class="time-option p-3 rounded-xl bg-white bg-opacity-10 backdrop-filter backdrop-blur-md cursor-pointer transition-all duration-300 flex items-center" onclick="selectOnboardingTime(this, '20:00')">
+                        <i class="fas fa-clock text-2xl mr-4" style="color: var(--primary-color)"></i>
+                        <div class="font-medium">20:00</div>
+                    </div>
+                    <div class="time-option p-3 rounded-xl bg-white bg-opacity-10 backdrop-filter backdrop-blur-md cursor-pointer transition-all duration-300 flex items-center" onclick="selectOnboardingTime(this, '21:00')">
+                        <i class="fas fa-clock text-2xl mr-4" style="color: var(--primary-color)"></i>
+                        <div class="font-medium">21:00</div>
+                    </div>
+                    <div class="time-option p-3 rounded-xl bg-white bg-opacity-10 backdrop-filter backdrop-blur-md cursor-pointer transition-all duration-300 flex items-center" onclick="selectOnboardingTime(this, '22:00')">
+                        <i class="fas fa-clock text-2xl mr-4" style="color: var(--primary-color)"></i>
+                        <div class="font-medium">22:00</div>
+                    </div>
+                    <div class="time-option p-3 rounded-xl bg-white bg-opacity-10 backdrop-filter backdrop-blur-md cursor-pointer transition-all duration-300 flex items-center" onclick="selectOnboardingTime(this, '23:00')">
+                        <i class="fas fa-clock text-2xl mr-4" style="color: var(--primary-color)"></i>
+                        <div class="font-medium">23:00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 步骤3: 准备好了吗 -->
+        <div class="swiper-slide" id="slide3">
+            <img src="https://img.icons8.com/clouds/500/000000/night.png" alt="夜市图标" class="onboarding-image floating-animation">
+            <h2 class="slide-heading">准备好了吗？</h2>
+            <p class="slide-description">夜色渐浓，夜市正等着你去探索！数百个摊位，数千种选择，等你去发现!</p>
+        </div>
+    </div>
+    
+    <!-- 底部指示器 -->
+    <div class="swiper-pagination">
+        <div class="swiper-pagination-bullet active" data-slide="1"></div>
+        <div class="swiper-pagination-bullet" data-slide="2"></div>
+        <div class="swiper-pagination-bullet" data-slide="3"></div>
+    </div>
+    
+    <!-- 按钮控制区 -->
+    <div class="btn-control">
+        <button class="btn-next" onclick="handleNext()">下一步</button>
+    </div>
+    
+    <!-- 跳过按钮 -->
+    <button class="btn-skip" onclick="skipOnboarding()">跳过</button>
+    
+    <script>
+        // 选择的城市和时间
+        let selectedCity = '';
+        let selectedTime = '';
+        let currentSlide = 1;
+        let stepsCompleted = [false, false, false]; // 记录各步骤是否已完成
+        
+        // 初始化
+        function init() {
+            showSlide(1); // 始终从第一步开始
+            updatePagination();
+            setupThemeToggle();
+            updateButtonText();
+            updateButtonState();
+        }
+        
+        // 选择城市
+        function selectOnboardingCity(element, city) {
+            // 移除所有活跃状态
+            document.querySelectorAll('.city-option').forEach(item => {
+                item.classList.remove('selected');
+                item.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                item.style.transform = 'scale(1)';
+            });
+            
+            // 设置当前选中项样式
+            element.classList.add('selected');
+            element.style.backgroundColor = 'rgba(168, 85, 247, 0.2)';
+            element.style.transform = 'scale(1.05)';
+            
+            // 保存选中的城市
+            selectedCity = city;
+            stepsCompleted[0] = true; // 标记第一步完成
+            
+            // 更新下一步按钮状态
+            updateButtonState();
+            
+            // 短暂延迟后自动进入下一步
+            setTimeout(() => {
+                if (currentSlide === 1) {
+                    handleNext();
+                }
+            }, 500);
+        }
+        
+        // 选择时间
+        function selectOnboardingTime(element, time) {
+            // 移除所有活跃状态
+            document.querySelectorAll('.time-option').forEach(item => {
+                item.classList.remove('selected');
+                item.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            });
+            
+            // 设置当前选中项样式
+            element.classList.add('selected');
+            element.style.backgroundColor = 'rgba(168, 85, 247, 0.2)';
+            
+            // 保存选中的时间
+            selectedTime = time;
+            stepsCompleted[1] = true; // 标记第二步完成
+            
+            // 更新下一步按钮状态
+            updateButtonState();
+            
+            // 短暂延迟后自动进入下一步
+            setTimeout(() => {
+                if (currentSlide === 2) {
+                    handleNext();
+                }
+            }, 500);
+        }
+        
+        // 显示指定幻灯片
+        function showSlide(slideIndex) {
+            const slides = document.querySelectorAll('.swiper-slide');
+            
+            // 只允许显示已完成步骤的下一步
+            if (slideIndex > 1 && !stepsCompleted[slideIndex - 2]) {
+                return; // 如果前一步未完成，不允许显示当前步骤
+            }
+            
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // 索引从1开始
+            if (slideIndex >= 1 && slideIndex <= slides.length) {
+                slides[slideIndex - 1].classList.add('active');
+                currentSlide = slideIndex;
+                
+                // 更新按钮文本和状态
+                updateButtonText();
+                updateButtonState();
+            }
+        }
+        
+        // 更新分页指示器
+        function updatePagination() {
+            const bullets = document.querySelectorAll('.swiper-pagination-bullet');
+            
+            bullets.forEach((bullet, index) => {
+                bullet.classList.remove('active');
+                
+                // 只有当前或之前步骤的指示器可点击
+                if (index + 1 <= currentSlide || stepsCompleted[index]) {
+                    bullet.style.cursor = 'pointer';
+                    bullet.style.opacity = '1';
+                } else {
+                    bullet.style.cursor = 'not-allowed';
+                    bullet.style.opacity = '0.5';
+                }
+            });
+            
+            bullets[currentSlide - 1].classList.add('active');
+        }
+        
+        // 更新按钮文本
+        function updateButtonText() {
+            const btnNext = document.querySelector('.btn-next');
+            
+            if (currentSlide === 1 || currentSlide === 2) {
+                btnNext.textContent = '下一步';
+            } else if (currentSlide === 3) {
+                btnNext.textContent = '开始探索';
+            }
+        }
+        
+        // 更新按钮状态
+        function updateButtonState() {
+            const btnNext = document.querySelector('.btn-next');
+            
+            if (!stepsCompleted[currentSlide - 1]) {
+                // 当前步骤未完成，禁用按钮
+                btnNext.disabled = true;
+                btnNext.style.opacity = '0.5';
+                btnNext.style.cursor = 'not-allowed';
+                btnNext.style.pointerEvents = 'none'; // 增加点击禁用
+            } else {
+                // 当前步骤已完成，启用按钮
+                btnNext.disabled = false;
+                btnNext.style.opacity = '1';
+                btnNext.style.cursor = 'pointer';
+                btnNext.style.pointerEvents = 'auto'; // 允许点击
+            }
+        }
+        
+        // 处理下一步按钮点击
+        function handleNext() {
+            // 检查当前步骤是否完成
+            if (!stepsCompleted[currentSlide - 1]) {
+                // 如果当前步骤未完成，按钮应该是禁用的，但为了安全起见，这里再次检查
+                return;
+            }
+            
+            if (currentSlide < 3) {
+                showSlide(currentSlide + 1);
+                updatePagination();
+            } else {
+                // 完成引导
+                completeOnboarding();
+            }
+        }
+        
+        // 跳过引导
+        function skipOnboarding() {
+            if (!selectedCity) selectedCity = '北京'; // 默认选择北京
+            if (!selectedTime) selectedTime = '21:00'; // 默认选择21:00
+            completeOnboarding();
+        }
+        
+        // 完成引导
+        function completeOnboarding() {
+            // 保存用户选择的城市和时间到localStorage
+            localStorage.setItem('userCity', selectedCity || '北京');
+            localStorage.setItem('userPreferredTime', selectedTime || '21:00');
+            localStorage.setItem('onboardingCompleted', 'true');
+            
+            // 重定向到首页
+            window.location.href = `map.html?city=${selectedCity || '北京'}&time=${selectedTime || '21:00'}`;
+        }
+        
+        // 主题切换功能
+        function toggleTheme() {
+            document.body.classList.toggle('night-mode');
+            
+            // 更新图标
+            const themeIcon = document.querySelector('.theme-toggle-btn i');
+            if (document.body.classList.contains('night-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('nightMode', 'true');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('nightMode', 'false');
+            }
+            
+            // 如果在iframe内，尝试同步父窗口通过postMessage
+            try {
+                if (window.parent && window.parent !== window) {
+                    const isNightMode = document.body.classList.contains('night-mode');
+                    // 使用postMessage通信，更加安全和可靠
+                    window.parent.postMessage({
+                        type: 'themeToggle',
+                        isNightMode: isNightMode
+                    }, '*');
+                }
+            } catch (e) {
+                console.log('无法同步父窗口主题:', e);
+            }
+        }
+        
+        // 设置主题切换功能
+        function setupThemeToggle() {
+            // 检查是否有保存的主题偏好
+            const storedNightMode = localStorage.getItem('nightMode');
+            const themeIcon = document.querySelector('.theme-toggle-btn i');
+            
+            if (storedNightMode === 'true') {
+                document.body.classList.add('night-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+            
+            // 尝试从父窗口同步主题
+            try {
+                if (window.parent && window.parent !== window) {
+                    const parentNightMode = window.parent.document.body.classList.contains('night-mode');
+                    if (parentNightMode) {
+                        document.body.classList.add('night-mode');
+                        themeIcon.classList.remove('fa-moon');
+                        themeIcon.classList.add('fa-sun');
+                    }
+                }
+            } catch (e) {
+                console.log('无法从父窗口同步主题:', e);
+            }
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', init);
+        
+        // 导出函数以便父页面调用
+        window.showSlide = showSlide;
+        window.updatePagination = updatePagination;
+        window.toggleTheme = toggleTheme;
+    </script>
+</body>
+</html> 
